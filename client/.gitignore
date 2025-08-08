@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+/dist/
+/dist-ssr/
+/build/
+/.vite/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Caches
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Editor/OS
+.DS_Store
+*.swp
+*.swo
+*.swn
+*.swm
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
