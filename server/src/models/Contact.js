@@ -12,4 +12,4 @@ const ContactSchema = new mongoose.Schema(
 
 const Contact = mongoose.model("Contact", ContactSchema);
 
-module.exports = Contact;
+export default Contact;
