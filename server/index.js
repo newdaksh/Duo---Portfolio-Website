@@ -18,7 +18,7 @@ app.get("/api/health", (_req, res) => {
 
 app.get("/", (_req, res) => {
   res.send("backend is running");
-}
+});
 
 app.use("/api/email", emailRouter);
 
