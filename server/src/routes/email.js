@@ -24,12 +24,18 @@ router.post(
     const { name, email, message } = req.body;
 
     try {
+      // Save to MongoDB (required)
       let id = null;
+      let doc = null;
       try {
-        const doc = await Contact.create({ name, email, message });
+        doc = await Contact.create({ name, email, message });
         id = doc?._id;
+        console.log("Contact saved to MongoDB:", id);
       } catch (dbErr) {
-        console.warn("Contact save skipped/failed:", dbErr?.message || dbErr);
+        console.error("Contact save failed:", dbErr?.message || dbErr);
+        return res
+          .status(500)
+          .json({ error: "Failed to save contact to database." });
       }
 
       // Email step is optional. If SMTP isn't configured, skip quietly.
