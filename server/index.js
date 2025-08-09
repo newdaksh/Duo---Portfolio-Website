@@ -3,11 +3,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import emailRouter from "./src/routes/email.js";
 
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const ORIGIN = process.env.CORS_ORIGIN || "https://duo-portfolio-website-frontend.onrender.com";
 
 app.use(cors({ origin: ORIGIN }));
 app.use(express.json());
