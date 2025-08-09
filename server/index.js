@@ -2,40 +2,50 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import emailRouter from "./src/routes/email.js";
-import mongoose from "mongoose";
-
+import { connectDB } from "./src/config/db.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const ORIGIN = process.env.CORS_ORIGIN || "https://duo-portfolio-website-frontend.onrender.com";
+const ORIGIN =
+  process.env.CORS_ORIGIN ||
+  "https://duo-portfolio-website-frontend.onrender.com";
 
+// Middlewares
 app.use(cors({ origin: ORIGIN }));
 app.use(express.json());
 
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", service: "duo-mern-portfolio-server" });
-});
+// Connect to MongoDB, then start server
+connectDB()
+  .then(() => {
+    console.log("✅ Database connection attempt finished");
 
-app.get("/", (_req, res) => {
-  res.send("backend is running");
-});
+    // Health check route
+    app.get("/api/health", (_req, res) => {
+      res.json({ status: "ok", service: "duo-mern-portfolio-server" });
+    });
 
-app.use("/api/email", emailRouter);
+    // Root route
+    app.get("/", (_req, res) => {
+      res.send("backend is running");
+    });
 
-app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(500).json({ error: "Internal Server Error" });
-});
+    // Email/contact API route
+    app.use("/api/email", emailRouter);
 
-mongoose.connect("mongodb+srv://octaldaksh:octal123@cluster0.5xt6n.mongodb.net/duo_portfolio", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.error("MongoDB connection error:", err));
+    // Error handler
+    app.use((err, _req, res, _next) => {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+    // Start server
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Failed to connect to MongoDB. Server not started.", err);
+    process.exit(1);
+  });
