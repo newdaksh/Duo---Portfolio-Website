@@ -29,7 +29,7 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-mongoose.connect("mongodb+srv://octaldaksh:octal123@cluster0.5xt6n.mongodb.net/duo_portfolio", {
+mongoose.connect(process.env.MONGO_URI || "mongodb+srv://octaldaksh:octal123@cluster0.5xt6n.mongodb.net/duo_portfolio", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
