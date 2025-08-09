@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { body, validationResult } from "express-validator";
 import { sendContactEmail } from "../services/mailer.js";
+import Contact from "../models/Contact.js";
 
 const router = Router();
 
@@ -23,8 +24,9 @@ router.post(
     const { name, email, message } = req.body;
 
     try {
+      const doc = await Contact.create({ name, email, message });
       await sendContactEmail({ name, email, message });
-      return res.json({ success: true });
+      return res.json({ success: true, id: doc._id });
     } catch (err) {
       console.error("Email send failed:", err);
       return res.status(500).json({ error: "Failed to send message" });
