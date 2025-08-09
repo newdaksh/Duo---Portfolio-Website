@@ -32,7 +32,9 @@ export default function Contact() {
         throw new Error(serverMsg);
       }
       setStatus({ type: 'success', message: 'Thanks! We will get back to you shortly.' });
-      e.currentTarget.reset();
+      if (e.currentTarget && typeof e.currentTarget.reset === 'function') {
+        e.currentTarget.reset();
+      }
     } catch (err) {
       setStatus({ type: 'error', message: err?.message || 'Sending failed. Try again later or email us directly.' });
     }
