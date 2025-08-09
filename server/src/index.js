@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import emailRouter from "./routes/email.js";
-import { connectDB } from "./config/db.js";
+import { connectDB, isDbConnected } from "./config/db.js";
 import { verifyMailer } from "./services/mailer.js";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -24,6 +25,15 @@ app.get("/", (_req, res) => {
 // Health endpoint
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", service: "duo-mern-portfolio-server" });
+});
+
+// DB status endpoint
+app.get("/api/db-status", (_req, res) => {
+  const dbStatus = isDbConnected()
+    ? { connected: true, database: mongoose.connection.db.databaseName }
+    : { connected: false };
+
+  res.json({ ...dbStatus });
 });
 
 // API routes

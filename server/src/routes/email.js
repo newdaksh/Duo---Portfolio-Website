@@ -2,6 +2,7 @@ import { Router } from "express";
 import { body, validationResult } from "express-validator";
 import { sendContactEmail } from "../services/mailer.js";
 import Contact from "../models/Contact.js";
+import { isDbConnected } from "../config/db.js";
 
 const router = Router();
 
@@ -24,6 +25,14 @@ router.post(
     const { name, email, message } = req.body;
 
     try {
+      // Check MongoDB connection first
+      if (!isDbConnected()) {
+        console.error("Contact save failed: MongoDB is not connected");
+        return res
+          .status(500)
+          .json({ error: "Database unavailable. Please try again later." });
+      }
+
       // Save to MongoDB (required)
       let id = null;
       let doc = null;
