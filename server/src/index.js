@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import emailRouter from "./routes/email.js";
 import { connectDB } from "./config/db.js";
+import { verifyMailer } from "./services/mailer.js";
 
 dotenv.config();
 
@@ -35,7 +36,8 @@ app.use((err, _req, res, _next) => {
 });
 
 // Start server after DB connect (non-fatal if MONGO_URI missing)
-connectDB().finally(() => {
+connectDB().finally(async () => {
+  await verifyMailer();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

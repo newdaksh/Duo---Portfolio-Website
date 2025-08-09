@@ -32,11 +32,28 @@ router.post(
         console.warn("Contact save skipped/failed:", dbErr?.message || dbErr);
       }
 
-      await sendContactEmail({ name, email, message });
-      return res.json({ success: true, id });
+      // Email step is optional. If SMTP isn't configured, skip quietly.
+      let emailSent = false;
+      const hasSMTP =
+        !!process.env.SMTP_HOST &&
+        !!process.env.SMTP_USER &&
+        !!process.env.SMTP_PASS;
+      if (hasSMTP) {
+        try {
+          await sendContactEmail({ name, email, message });
+          emailSent = true;
+        } catch (mailErr) {
+          console.error("Email send failed:", mailErr?.message || mailErr);
+          // Do not fail the whole request if email fails
+        }
+      } else {
+        console.info("Email not configured; skipping email step.");
+      }
+
+      return res.json({ success: true, id, emailSent });
     } catch (err) {
-      console.error("Email send failed:", err);
-      return res.status(500).json({ error: "Failed to send message" });
+      console.error("Contact handler failed:", err);
+      return res.status(500).json({ error: "Failed to process message." });
     }
   }
 );

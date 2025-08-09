@@ -23,11 +23,18 @@ export default function Contact() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, message }),
       });
-      if (!res.ok) throw new Error('Failed to send');
+      if (!res.ok) {
+        let serverMsg = 'Failed to send';
+        try {
+          const data = await res.json();
+          serverMsg = data?.error || serverMsg;
+        } catch {}
+        throw new Error(serverMsg);
+      }
       setStatus({ type: 'success', message: 'Thanks! We will get back to you shortly.' });
       e.currentTarget.reset();
     } catch (err) {
-      setStatus({ type: 'error', message: 'Sending failed. Try again later or email us directly.' });
+      setStatus({ type: 'error', message: err?.message || 'Sending failed. Try again later or email us directly.' });
     }
   }
 
