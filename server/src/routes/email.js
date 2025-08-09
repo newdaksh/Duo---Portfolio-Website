@@ -1,10 +1,10 @@
-import { Router } from "express";
+import express from "express";
 import { body, validationResult } from "express-validator";
 import { sendContactEmail } from "../services/mailer.js";
 import Contact from "../models/Contact.js";
 import { isDbConnected } from "../config/db.js";
 
-const router = Router();
+const router = express.Router();
 
 router.post(
   "/",
