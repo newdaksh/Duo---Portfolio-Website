@@ -8,9 +8,11 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const ORIGINS = (process.env.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((s) => s.trim());
 
-app.use(cors({ origin: ORIGIN }));
+app.use(cors({ origin: ORIGINS }));
 app.use(express.json());
 
 // Root route for quick uptime check

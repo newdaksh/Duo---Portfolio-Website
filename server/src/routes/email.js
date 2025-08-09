@@ -24,9 +24,16 @@ router.post(
     const { name, email, message } = req.body;
 
     try {
-      const doc = await Contact.create({ name, email, message });
+      let id = null;
+      try {
+        const doc = await Contact.create({ name, email, message });
+        id = doc?._id;
+      } catch (dbErr) {
+        console.warn("Contact save skipped/failed:", dbErr?.message || dbErr);
+      }
+
       await sendContactEmail({ name, email, message });
-      return res.json({ success: true, id: doc._id });
+      return res.json({ success: true, id });
     } catch (err) {
       console.error("Email send failed:", err);
       return res.status(500).json({ error: "Failed to send message" });
