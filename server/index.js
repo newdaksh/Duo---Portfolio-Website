@@ -16,6 +16,10 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", service: "duo-mern-portfolio-server" });
 });
 
+app.get("/", (_req, res) => {
+  res.send("backend is running");
+}
+
 app.use("/api/email", emailRouter);
 
 app.use((err, _req, res, _next) => {
